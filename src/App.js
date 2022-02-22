@@ -36,77 +36,58 @@ export const App = (props) => {
     setSelectedQuarter(option)
   }
 
-    const handleDrop = (accepted, rejected) => {
-        let error = {};
-        let selectedFile = null;
-        let selectedFileName = '';
+  const handleDrop = (accepted, rejected) => {
+      let selectedFileName = '';
 
-        if (rejected.length > 0) {
-          setError('Uploaded file is over 10 MB and is therefore rejected.')
-            // error = {
-            //     status: true,
-            //     message: 'Uploaded file is over 10 MB and is therefore rejected.'
-            // };
-        } 
-        else 
-        if (accepted.length > 0) {
-            const isExcel = checkExcelFile(accepted[0].type, accepted[0].name);
-            if (isExcel) {
-                [selectedFile] = accepted;
-                selectedFileName = accepted[0].name;
-            } else {
-              setError('Unsupported File Format.')
-                // error = {
-                //     status: true,
-                //     message: 'Unsupported File Format.'
-                // };
-            }
-        }
-        setSelectedFileName(selectedFileName)
-
-        var file = accepted[0]
-        doFile(file)
-        //this.setState({ selectedFile, error: error, selectedFileName });
-    }
-
-    // const onInputChange = async (e) => {
-    //     var file = e.target.files[0]
-    //     doFile(file)
-    // }
-
-    const doError = (e) => {
-      console.log(e)
-      setError(e)
-    }
-
-    const doFile = async (file) => {
-      try {
-
-
-        var targetsRows = await readXlsxFile(file, { sheet: "Targets" })
-        var ratingsRows = await readXlsxFile(file, { sheet: "Ratings" })
-
-        var allPosition = getAllPosition(targetsRows); //1
-        var allSkill = getAllSkill(ratingsRows); //2
-        var er
-        var allUser = getAllUser(ratingsRows, allPosition, selectedquarter, selectedyear, doError); //3
-        console.log(er)
-        var positionTarget = getPositionTarget(targetsRows); //4
-        var userSkill = getUserSkill(ratingsRows, false, selectedquarter, selectedyear); //5
-  
-        setAllPosition(window.URL.createObjectURL(new Blob([JSON.stringify(allPosition,null,2)])))
-        setAllSkill(window.URL.createObjectURL(new Blob([JSON.stringify(allSkill,null,2)])))
-        setAllUser(window.URL.createObjectURL(new Blob([JSON.stringify(allUser,null,2)])))
-        setPositionTarget(window.URL.createObjectURL(new Blob([JSON.stringify(positionTarget,null,2)])))
-        setUserSkill(window.URL.createObjectURL(new Blob([JSON.stringify(userSkill,null,2)])))
-
-        var selfratingsRows = await readXlsxFile(file, { sheet: "SelfRatings" })
-        console.log('selfratingsRows')
+      if (rejected.length > 0) {
+        setError('Uploaded file is over 10 MB and is therefore rejected.')
+      } 
+      else 
+      if (accepted.length > 0) {
+          const isExcel = checkExcelFile(accepted[0].type, accepted[0].name);
+          if (isExcel) {
+              //[selectedFile] = accepted;
+              selectedFileName = accepted[0].name;
+          } else {
+            setError('Unsupported File Format.')
+          }
       }
-      catch(e) {
-        //console.log(e)
-      }
+      setSelectedFileName(selectedFileName)
+
+      var file = accepted[0]
+      doFile(file)
+  }
+
+  const doError = (e) => {
+    console.log(e)
+    setError(e)
+  }
+
+  const doFile = async (file) => {
+    try {
+      setError('')
+      var targetsRows = await readXlsxFile(file, { sheet: "Targets" })
+      var ratingsRows = await readXlsxFile(file, { sheet: "Ratings" })
+
+      var allPosition = getAllPosition(targetsRows); //1
+      var allSkill = getAllSkill(ratingsRows); //2
+      var allUser = getAllUser(ratingsRows, allPosition, selectedquarter, selectedyear, doError); //3
+      var positionTarget = getPositionTarget(targetsRows); //4
+      var userSkill = getUserSkill(ratingsRows, false, selectedquarter, selectedyear); //5
+
+      setAllPosition(window.URL.createObjectURL(new Blob([JSON.stringify(allPosition,null,2)])))
+      setAllSkill(window.URL.createObjectURL(new Blob([JSON.stringify(allSkill,null,2)])))
+      setAllUser(window.URL.createObjectURL(new Blob([JSON.stringify(allUser,null,2)])))
+      setPositionTarget(window.URL.createObjectURL(new Blob([JSON.stringify(positionTarget,null,2)])))
+      setUserSkill(window.URL.createObjectURL(new Blob([JSON.stringify(userSkill,null,2)])))
+
+      //var selfratingsRows = await readXlsxFile(file, { sheet: "SelfRatings" })
+      //console.log('selfratingsRows',selfratingsRows)
     }
+    catch(e) {
+      alert(e)
+    }
+  }
 
   return (
     <div style={{boxShadow:'rgba(0, 0, 0, 0.35) 0px 5px 15px',display:'flex',flexDirection:'column',border:'10px solid lightgray',width:'100%',height:'100%',boxSizing:'border-box'}}>

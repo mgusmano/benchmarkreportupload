@@ -105,10 +105,10 @@ export const getAllUser = (rows, positions, selectedquarter, selectedyear, doErr
             "average": rows[r][6],
             "user_quarter": selectedquarter.value,
             "user_year": selectedyear.value,
-            "job_band": 0, //null,
-            "segment": 0, //null,
-            "sub_function":0, // null,
-            "function": 0 //null
+            // "job_band": 0, //null,
+            // "segment": 0, //null,
+            // "sub_function":0, // null,
+            // "function": 0 //null
         })
     }
     doError(localError)
