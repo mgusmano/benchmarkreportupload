@@ -59,7 +59,6 @@ export const App = (props) => {
   }
 
   const doError = (e) => {
-    console.log(e)
     setError(e)
   }
 
@@ -94,7 +93,7 @@ export const App = (props) => {
           
       <div style={{height:'70px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
         <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div><div style={{'fontSize':'10px'}}>
-          v2022-02-22-b
+          v2022-02-22-c
         </div>
       </div>
 
@@ -165,11 +164,18 @@ export const App = (props) => {
         Downloadable Files:
       </div>
       <div style={{margin:'10px 10px 10px 10px',border:'0px solid red',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-        <div>{allposition !== null && <a download="getAllPosition.json" href={allposition}>getAllPosition.json</a>}</div>
-        <div>{allskill !== null && <a download="getAllSkill.json" href={allskill}>getAllSkill.json</a>}</div>
-        <div>{alluser !== null && <a download="getAllUser.json" href={alluser}>getAllUser.json</a>}</div>
-        <div>{positiontarget !== null && <a download="getPositionTarget.json" href={positiontarget}>getPositionTarget.json</a>}</div>
-        <div>{userskill !== null && <a download="getUserSkill.json" href={userskill}>getUserSkill.json</a>}</div>
+        <button style={{margin:'0 10px 10px 10px'}} onClick={()=>{
+          document.getElementById('allposition').click();
+          document.getElementById('allskill').click();
+          document.getElementById('alluser').click();
+          document.getElementById('positiontarget').click();
+          document.getElementById('userskill').click();     
+        }}>download all</button>
+        <div>{allposition !== null && <a id="allposition" download="getAllPosition.json" href={allposition}>getAllPosition.json</a>}</div>
+        <div>{allskill !== null && <a id="allskill" download="getAllSkill.json" href={allskill}>getAllSkill.json</a>}</div>
+        <div>{alluser !== null && <a id="alluser" download="getAllUser.json" href={alluser}>getAllUser.json</a>}</div>
+        <div>{positiontarget !== null && <a id="positiontarget" download="getPositionTarget.json" href={positiontarget}>getPositionTarget.json</a>}</div>
+        <div>{userskill !== null && <a id="userskill" download="getUserSkill.json" href={userskill}>getUserSkill.json</a>}</div>
       </div>
       </>
       }

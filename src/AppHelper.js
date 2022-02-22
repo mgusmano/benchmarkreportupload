@@ -12,7 +12,7 @@ const convertColumnLetterToNumber = (str) => {
 }
 
 export const getAllPosition = (rows) => {
-    console.log('getAllPosition')
+    //console.log('getAllPosition')
     var dataStartRow = convertRowNumberToNumber(2)
     var theData = []
     for (let r = dataStartRow; r < rows.length; r++) {
@@ -75,7 +75,7 @@ export const getAllSkill = (rows) => {
 }
 
 export const getAllUser = (rows, positions, selectedquarter, selectedyear, doError) => {
-    console.log('getAllUser')
+    //console.log('getAllUser')
     var dataStartRow = convertRowNumberToNumber(1)
     var theData = []
     var localError = ''
