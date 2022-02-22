@@ -93,7 +93,9 @@ export const App = (props) => {
     <div style={{boxShadow:'rgba(0, 0, 0, 0.35) 0px 5px 15px',display:'flex',flexDirection:'column',border:'10px solid lightgray',width:'100%',height:'100%',boxSizing:'border-box'}}>
           
       <div style={{height:'70px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
-        <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div><div style={{'fontSize':'10px'}}>v2022-02-22-a</div>
+        <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div><div style={{'fontSize':'10px'}}>
+          v2022-02-22-b
+        </div>
       </div>
 
       <div style={{height:'70px',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
