@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Dropzone from 'react-dropzone';
 import readXlsxFile from 'read-excel-file';
 import { checkExcelFile, getCurrentQuarter } from './commonHelper.jsx';
-//import { classes } from './AppCSS';
 import UploadImg from './FileUpload.svg';
 import Select from 'react-select';
 import {
@@ -14,26 +13,27 @@ import {
 } from './AppHelper'
 
 export const App = (props) => {
+  const [error, setError] = useState('');
   const [selectedfilename, setSelectedFileName] = useState(null);
-    const [selectedquarter, setSelectedQuarter] = useState(null);
-    const [selectedyear, setSelectedYear] = useState(null);
+  const [selectedquarter, setSelectedQuarter] = useState(null);
+  const [selectedyear, setSelectedYear] = useState(null);
 
-    const [allposition, setAllPosition] = useState(null);
-    const [allskill, setAllSkill] = useState(null);
-    const [alluser, setAllUser] = useState(null);
-    const [positiontarget, setPositionTarget] = useState(null);
-    const [userskill, setUserSkill] = useState(null);
+  const [allposition, setAllPosition] = useState(null);
+  const [allskill, setAllSkill] = useState(null);
+  const [alluser, setAllUser] = useState(null);
+  const [positiontarget, setPositionTarget] = useState(null);
+  const [userskill, setUserSkill] = useState(null);
 
-    useEffect(() => {
-      const currentYear = new Date().getFullYear();
-      const quarter = getCurrentQuarter();
-      setSelectedYear({ label: currentYear, value: currentYear })
-      setSelectedQuarter({label: quarter, value: quarter})
-    },[])
+  useEffect(() => {
+    const currentYear = new Date().getFullYear();
+    const quarter = getCurrentQuarter();
+    setSelectedYear({ label: currentYear, value: currentYear })
+    setSelectedQuarter({label: quarter, value: quarter})
+  },[])
 
-    const changeSelectedQuarter = (option) => {
-      console.log('changeSelectedQuarter')
-      setSelectedQuarter(option)
+  const changeSelectedQuarter = (option) => {
+    console.log('changeSelectedQuarter')
+    setSelectedQuarter(option)
   }
 
     const handleDrop = (accepted, rejected) => {
@@ -42,23 +42,24 @@ export const App = (props) => {
         let selectedFileName = '';
 
         if (rejected.length > 0) {
-            error = {
-                status: true,
-                message: 'Uploaded file is over 10 MB and is therefore rejected.'
-            };
+          setError('Uploaded file is over 10 MB and is therefore rejected.')
+            // error = {
+            //     status: true,
+            //     message: 'Uploaded file is over 10 MB and is therefore rejected.'
+            // };
         } 
         else 
         if (accepted.length > 0) {
             const isExcel = checkExcelFile(accepted[0].type, accepted[0].name);
             if (isExcel) {
                 [selectedFile] = accepted;
-                console.log(accepted)
                 selectedFileName = accepted[0].name;
             } else {
-                error = {
-                    status: true,
-                    message: 'Unsupported File Format.'
-                };
+              setError('Unsupported File Format.')
+                // error = {
+                //     status: true,
+                //     message: 'Unsupported File Format.'
+                // };
             }
         }
         setSelectedFileName(selectedFileName)
@@ -73,13 +74,23 @@ export const App = (props) => {
     //     doFile(file)
     // }
 
+    const doError = (e) => {
+      console.log(e)
+      setError(e)
+    }
+
     const doFile = async (file) => {
+      try {
+
+
         var targetsRows = await readXlsxFile(file, { sheet: "Targets" })
         var ratingsRows = await readXlsxFile(file, { sheet: "Ratings" })
 
         var allPosition = getAllPosition(targetsRows); //1
         var allSkill = getAllSkill(ratingsRows); //2
-        var allUser = getAllUser(ratingsRows, allPosition, selectedquarter, selectedyear); //3
+        var er
+        var allUser = getAllUser(ratingsRows, allPosition, selectedquarter, selectedyear, doError); //3
+        console.log(er)
         var positionTarget = getPositionTarget(targetsRows); //4
         var userSkill = getUserSkill(ratingsRows, false, selectedquarter, selectedyear); //5
   
@@ -91,14 +102,17 @@ export const App = (props) => {
 
         var selfratingsRows = await readXlsxFile(file, { sheet: "SelfRatings" })
         console.log('selfratingsRows')
-
+      }
+      catch(e) {
+        //console.log(e)
+      }
     }
 
   return (
-    <div style={{display:'flex',flexDirection:'column',border:'10px solid green',width:'100%',height:'100%',boxSizing:'border-box'}}>
+    <div style={{boxShadow:'rgba(0, 0, 0, 0.35) 0px 5px 15px',display:'flex',flexDirection:'column',border:'10px solid lightgray',width:'100%',height:'100%',boxSizing:'border-box'}}>
           
-      <div style={{height:'70px',display:'flex',alignItems:'center',justifyContent:'center'}}>
-        <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div>
+      <div style={{height:'70px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+        <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div><div style={{'fontSize':'10px'}}>v2022-02-22-a</div>
       </div>
 
       <div style={{height:'70px',display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
@@ -156,10 +170,17 @@ export const App = (props) => {
         </Dropzone>
       </div>
 
+      {error !== '' &&
+      <div style={{color:'red',margin:'10px 10px 10px 10px',border:'0px solid red',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
+        Error: {error}
+      </div>
+      }
+
+      {userskill !== null && error === '' &&
+      <>
       <div style={{margin:'10px 10px 10px 10px',border:'0px solid red',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
         Downloadable Files:
       </div>
-
       <div style={{margin:'10px 10px 10px 10px',border:'0px solid red',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
         <div>{allposition !== null && <a download="getAllPosition.json" href={allposition}>getAllPosition.json</a>}</div>
         <div>{allskill !== null && <a download="getAllSkill.json" href={allskill}>getAllSkill.json</a>}</div>
@@ -167,6 +188,8 @@ export const App = (props) => {
         <div>{positiontarget !== null && <a download="getPositionTarget.json" href={positiontarget}>getPositionTarget.json</a>}</div>
         <div>{userskill !== null && <a download="getUserSkill.json" href={userskill}>getUserSkill.json</a>}</div>
       </div>
+      </>
+      }
 
     </div>
   )

@@ -12,6 +12,7 @@ const convertColumnLetterToNumber = (str) => {
 }
 
 export const getAllPosition = (rows) => {
+    console.log('getAllPosition')
     var dataStartRow = convertRowNumberToNumber(2)
     var theData = []
     for (let r = dataStartRow; r < rows.length; r++) {
@@ -73,18 +74,21 @@ export const getAllSkill = (rows) => {
    return theData
 }
 
-export const getAllUser = (rows, positions, selectedquarter, selectedyear) => {
+export const getAllUser = (rows, positions, selectedquarter, selectedyear, doError) => {
     console.log('getAllUser')
-    console.log('positions',positions)
     var dataStartRow = convertRowNumberToNumber(1)
     var theData = []
+    var localError = ''
     for (let r = dataStartRow; r < rows.length; r++) {        
         const found = positions.find(element => element.position_name === rows[r][4]);
         //console.log(found)
         var positionId = ''
         if (found === undefined) {
             positionId = null
+            //alert(rows[r][4] + ' is undefined')
             console.log('undefined',rows[r][4])
+            localError = localError + rows[r][4] + ' is undefined' + ', '
+            
         }
         else {
             positionId = found.position_id
@@ -107,6 +111,7 @@ export const getAllUser = (rows, positions, selectedquarter, selectedyear) => {
             "function": 0 //null
         })
     }
+    doError(localError)
     return theData
 }
 
