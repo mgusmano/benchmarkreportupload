@@ -11,7 +11,72 @@ const convertColumnLetterToNumber = (str) => {
     return out-1;
 }
 
-export const getAllPosition = (rows) => {
+export const getSegmentsFromSpreadsheet = (rows, doError) => {
+    var segment = rows[0]
+    var allSegment = []
+    for (let c = 1; c < segment.length; c++) {
+        if (segment[c] !== null) {
+            allSegment.push(segment[c])
+        }
+    }
+    return allSegment
+}
+
+export const getLinesFromSpreadsheet = (rows, doError) => {
+    var line = rows[2]
+    var allLine = []
+    for (let c = 1; c < line.length; c++) {
+        if (line[c] !== null) {
+            allLine.push(line[c])
+        }
+    }
+    //console.log('line',allLine)
+    return allLine
+}
+
+export const getCompetenciesFromSpreadsheet = (rows, doError) => {
+    var competency = rows[3]
+    var allCompetency = []
+    for (let c = 1; c < competency.length; c++) {
+        if (competency[c] !== null) {
+            allCompetency.push(competency[c])
+        }
+    }
+    //console.log('competency',allCompetency)
+    return allCompetency
+}
+
+export const getSkillsFromSpreadsheet = (rows, doError) => {
+    var dataStartRow = convertRowNumberToNumber(8)
+    var dataStartColumn = convertColumnLetterToNumber('L')
+    var skillIds = rows[dataStartRow]
+    var skillNames = rows[dataStartRow+1]
+    var allSkill = []
+
+    var lines = rows[2]
+    var competencies = rows[3]
+    var currentLine = ''
+    var currentCompetency = ''
+    for (let c = dataStartColumn; c < skillIds.length; c++) {
+        if (lines[c] !== null) {
+            currentLine = lines[c]
+        }
+        if (competencies[c] !== null) {
+            currentCompetency = competencies[c]
+        }
+        if (skillIds[c] !== null) {
+            allSkill.push({
+                skillID: skillIds[c],
+                skillName: skillNames[c],
+                competencyName: currentCompetency,
+                lineName: currentLine
+            })
+        }
+    }
+    return allSkill
+}
+
+export const getAllPosition = (rows, doError) => {
     //console.log('getAllPosition')
     var dataStartRow = convertRowNumberToNumber(2)
     var theData = []
@@ -24,75 +89,85 @@ export const getAllPosition = (rows) => {
     return theData
 }
 
-export const getAllSkill = (rows) => {
+export const getAllSkill = (rows, segments, lines, competencies, skills, doError) => {
     var dataStartRow = convertRowNumberToNumber(10)
     var skillRow = convertRowNumberToNumber(8)
     var dataStartColumn = convertColumnLetterToNumber('L')
+    var localError = ''
 
-    console.log(rows)
     //var skillJsonData = {};
     const skillData = [...rows];
     skillData.splice(0, dataStartRow)
-    //const skillData = [...rows.splice(0, dataStartRow)];
-    console.log(rows)
+    console.log(skillData)
     const totalIterations = skillData[0].length;
     let segment = "";
     let isCore = false;
     let line = "";
     let competency = "";
-    //let result = [];
+    let skill = "";
     let theData = [];
-  
-    for (let index = dataStartColumn; index < totalIterations; index++) {
-      if (skillData[0][index] && segment !== skillData[0][index]) {
-        segment = skillData[0][index];
-      }
-  
-      if (skillData[1][index]) {
-        if (skillData[1][index] === "Core") {
-          isCore = true;
-        } else {
-          isCore = false;
-        }
-      }
-  
-      if (skillData[2][index] && line !== skillData[1][index]) {
-        line = skillData[2][index];
-      }
-  
-      if (skillData[3][index] && competency !== skillData[3][index]) {
-        competency = skillData[3][index];
-      }
 
-      const data2 = {
-        skill_id: skillData[skillRow][index],
-        skill_name: skillData[skillRow+1][index],
-        segment: segment,
-        is_core: isCore ? 1 : 0,
-        line: line,
-        competency: competency,
-      };
-      theData.push(data2);
-      //skillJsonData[data.skillName] = data.skillId;
+    for (let index = dataStartColumn; index < totalIterations; index++) {
+        // if (skillData[0][index] && segment !== skillData[0][index]) {
+        //     segment = segments[skillData[0][index]];
+        // }
+        segment = "none"
+  
+        if (skillData[1][index]) {
+            if (skillData[1][index] === "Core") {
+            isCore = true;
+            } else {
+            isCore = false;
+            }
+        }
+  
+        // if (skillData[2][index] && line !== skillData[1][index]) {
+        //     line = lines[skillData[2][index]];
+        // }
+    
+        // if (skillData[3][index] && competency !== skillData[3][index]) {
+        //     competency = competencies[skillData[3][index]];
+        // }
+
+        const found = skills.find(element => element.skillID === rows[7][index]);
+
+        if (found !== undefined) {
+            skill = found.skillName  
+            competency = found.competencyName
+            line = found.lineName  
+        }
+        else {
+            localError = localError +  ' skillID' + rows[7][index] + ', '   
+            skill = ''
+            competency = ''
+            line = '' 
+        }
+
+        const data2 = {
+            skill_id: rows[7][index],
+            skill_name: skill, //skillData[skillRow+1][index],
+            segment: segment,
+            is_core: isCore ? 1 : 0,
+            competency: competency,
+            line: line
+        };
+        theData.push(data2);
+        //skillJsonData[data.skillName] = data.skillId;
     }
-   return theData
+    return theData
 }
 
 export const getAllUser = (rows, positions, selectedquarter, selectedyear, doError) => {
-    //console.log('getAllUser')
     var dataStartRow = convertRowNumberToNumber(10)
     var theData = []
     var localError = ''
     for (let r = dataStartRow; r < rows.length; r++) {        
         const found = positions.find(element => element.position_name === rows[r][4]);
-        //console.log(found)
         var positionId = ''
         if (found === undefined) {
             positionId = null
-            //alert(rows[r][4] + ' is undefined')
             console.log('undefined',rows[r][4])
-            localError = localError + rows[r][4] + ' is undefined' + ', '
-            
+            localError = localError + rows[r][4] + ' is undefined' + ', '       
         }
         else {
             positionId = found.position_id
@@ -119,7 +194,7 @@ export const getAllUser = (rows, positions, selectedquarter, selectedyear, doErr
     return theData
 }
 
-export function getPositionTarget(rows) {
+export function getPositionTarget(rows, doError) {
     var dataStartRow = convertRowNumberToNumber(2)
     const totalIterations = rows[dataStartRow].length;
     var dataStartColumn = convertColumnLetterToNumber('C')
@@ -139,16 +214,14 @@ export function getPositionTarget(rows) {
     return theData
 }
 
-export const getUserSkill = (rows, isSelfRating, selectedquarter, selectedyear) => {
+export const getUserSkill = (rows, isSelfRating, selectedquarter, selectedyear, doError) => {
     var dataStartRow = convertRowNumberToNumber(10)
     var skillRow = convertRowNumberToNumber(8)
     var dataStartColumn = convertColumnLetterToNumber('L')
     var theData = []
     var skillData = rows[skillRow]
-    console.log(rows)
     for (let r = dataStartRow; r < rows.length; r++) {
         let userId = rows[r][0]; //row,col
-        // console.log(userId)
         if (userId) {
             for (let c = dataStartColumn; c < rows[0].length; c++) {
                 theData.push({
@@ -160,6 +233,9 @@ export const getUserSkill = (rows, isSelfRating, selectedquarter, selectedyear) 
                     "user_quarter": selectedquarter.value
                 })
             }
+        }
+        else {
+
         }
     }
     return theData

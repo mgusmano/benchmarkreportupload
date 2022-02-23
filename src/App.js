@@ -5,6 +5,10 @@ import { checkExcelFile, getCurrentQuarter } from './commonHelper.jsx';
 import UploadImg from './FileUpload.svg';
 import Select from 'react-select';
 import {
+  getSegmentsFromSpreadsheet,
+  getLinesFromSpreadsheet,
+  getCompetenciesFromSpreadsheet,
+  getSkillsFromSpreadsheet,
   getAllPosition,
   getAllSkill,
   getAllUser,
@@ -68,15 +72,18 @@ export const App = (props) => {
       var ratingsRows = await readXlsxFile(file, { sheet: "Ratings" })
       var targetsRows = await readXlsxFile(file, { sheet: "Targets" })
 
-      console.log(ratingsRows)
+      var segments = getSegmentsFromSpreadsheet(ratingsRows, doError);
+      var lines = getLinesFromSpreadsheet(ratingsRows, doError);
+      var competencies = getCompetenciesFromSpreadsheet(ratingsRows, doError);
+      var skills = getSkillsFromSpreadsheet(ratingsRows, doError);
+      console.log(skills)
 
-      var allPosition = getAllPosition(targetsRows); //1
-      console.log(ratingsRows)
-      var allSkill = getAllSkill(ratingsRows); //2
-      console.log(ratingsRows)
+      var allPosition = getAllPosition(targetsRows, doError); //1
+      var allSkill = getAllSkill(ratingsRows, segments, lines, competencies, skills, doError); //2
+      console.log(allSkill)
       var allUser = getAllUser(ratingsRows, allPosition, selectedquarter, selectedyear, doError); //3
-      var positionTarget = getPositionTarget(targetsRows); //4
-      var userSkill = getUserSkill(ratingsRows, false, selectedquarter, selectedyear); //5
+      var positionTarget = getPositionTarget(targetsRows, doError); //4
+      var userSkill = getUserSkill(ratingsRows, false, selectedquarter, selectedyear, doError); //5
 
       setAllPosition(window.URL.createObjectURL(new Blob([JSON.stringify(allPosition,null,2)])))
       setAllSkill(window.URL.createObjectURL(new Blob([JSON.stringify(allSkill,null,2)])))
@@ -97,7 +104,7 @@ export const App = (props) => {
           
       <div style={{height:'70px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
         <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div><div style={{'fontSize':'10px'}}>
-          v2022-02-23-a
+          v2022-02-23-b
         </div>
       </div>
 
