@@ -65,11 +65,15 @@ export const App = (props) => {
   const doFile = async (file) => {
     try {
       setError('')
-      var targetsRows = await readXlsxFile(file, { sheet: "Targets" })
       var ratingsRows = await readXlsxFile(file, { sheet: "Ratings" })
+      var targetsRows = await readXlsxFile(file, { sheet: "Targets" })
+
+      console.log(ratingsRows)
 
       var allPosition = getAllPosition(targetsRows); //1
+      console.log(ratingsRows)
       var allSkill = getAllSkill(ratingsRows); //2
+      console.log(ratingsRows)
       var allUser = getAllUser(ratingsRows, allPosition, selectedquarter, selectedyear, doError); //3
       var positionTarget = getPositionTarget(targetsRows); //4
       var userSkill = getUserSkill(ratingsRows, false, selectedquarter, selectedyear); //5
@@ -93,7 +97,7 @@ export const App = (props) => {
           
       <div style={{height:'70px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
         <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div><div style={{'fontSize':'10px'}}>
-          v2022-02-22-c
+          v2022-02-23-a
         </div>
       </div>
 

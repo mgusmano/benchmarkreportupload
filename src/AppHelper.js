@@ -29,8 +29,12 @@ export const getAllSkill = (rows) => {
     var skillRow = convertRowNumberToNumber(8)
     var dataStartColumn = convertColumnLetterToNumber('L')
 
+    console.log(rows)
     //var skillJsonData = {};
-    const skillData = [...rows.splice(0, dataStartRow)];
+    const skillData = [...rows];
+    skillData.splice(0, dataStartRow)
+    //const skillData = [...rows.splice(0, dataStartRow)];
+    console.log(rows)
     const totalIterations = skillData[0].length;
     let segment = "";
     let isCore = false;
@@ -76,7 +80,7 @@ export const getAllSkill = (rows) => {
 
 export const getAllUser = (rows, positions, selectedquarter, selectedyear, doError) => {
     //console.log('getAllUser')
-    var dataStartRow = convertRowNumberToNumber(1)
+    var dataStartRow = convertRowNumberToNumber(10)
     var theData = []
     var localError = ''
     for (let r = dataStartRow; r < rows.length; r++) {        
@@ -140,6 +144,8 @@ export const getUserSkill = (rows, isSelfRating, selectedquarter, selectedyear) 
     var skillRow = convertRowNumberToNumber(8)
     var dataStartColumn = convertColumnLetterToNumber('L')
     var theData = []
+    var skillData = rows[skillRow]
+    console.log(rows)
     for (let r = dataStartRow; r < rows.length; r++) {
         let userId = rows[r][0]; //row,col
         // console.log(userId)
@@ -147,7 +153,7 @@ export const getUserSkill = (rows, isSelfRating, selectedquarter, selectedyear) 
             for (let c = dataStartColumn; c < rows[0].length; c++) {
                 theData.push({
                     "user_id": userId,
-                    "skill_id": rows[skillRow][c],
+                    "skill_id": skillData[c], //rows[r][c],
                     "rating": rows[r][c] >= 0 ? rows[r][c] : null,
                     "is_self": isSelfRating ? 1 : 0,
                     "user_year": selectedyear.value,
