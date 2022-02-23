@@ -49,15 +49,22 @@ export const getCompetenciesFromSpreadsheet = (rows, doError) => {
 export const getSkillsFromSpreadsheet = (rows, doError) => {
     var dataStartRow = convertRowNumberToNumber(8)
     var dataStartColumn = convertColumnLetterToNumber('L')
+
     var skillIds = rows[dataStartRow]
     var skillNames = rows[dataStartRow+1]
     var allSkill = []
 
+    var segments = rows[0]
+    var cores = rows[1]
     var lines = rows[2]
     var competencies = rows[3]
+    var currentSegment = ''
     var currentLine = ''
     var currentCompetency = ''
     for (let c = dataStartColumn; c < skillIds.length; c++) {
+        if (segments[c] !== null) {
+            currentSegment = segments[c]
+        }
         if (lines[c] !== null) {
             currentLine = lines[c]
         }
@@ -69,7 +76,9 @@ export const getSkillsFromSpreadsheet = (rows, doError) => {
                 skillID: skillIds[c],
                 skillName: skillNames[c],
                 competencyName: currentCompetency,
-                lineName: currentLine
+                lineName: currentLine,
+                segmentName: currentSegment,
+                core: cores[c]
             })
         }
     }
@@ -89,7 +98,7 @@ export const getAllPosition = (rows, doError) => {
     return theData
 }
 
-export const getAllSkill = (rows, segments, lines, competencies, skills, doError) => {
+export const getAllSkill = (rows, skills, doError) => {
     var dataStartRow = convertRowNumberToNumber(10)
     var skillRow = convertRowNumberToNumber(8)
     var dataStartColumn = convertColumnLetterToNumber('L')
@@ -100,56 +109,46 @@ export const getAllSkill = (rows, segments, lines, competencies, skills, doError
     skillData.splice(0, dataStartRow)
     console.log(skillData)
     const totalIterations = skillData[0].length;
-    let segment = "";
-    let isCore = false;
-    let line = "";
-    let competency = "";
     let skill = "";
+    let competency = "";
+    let line = "";
+    let segment = "";
+    let isCore = null;
     let theData = [];
 
     for (let index = dataStartColumn; index < totalIterations; index++) {
-        // if (skillData[0][index] && segment !== skillData[0][index]) {
-        //     segment = segments[skillData[0][index]];
-        // }
-        segment = "none"
-  
-        if (skillData[1][index]) {
-            if (skillData[1][index] === "Core") {
-            isCore = true;
-            } else {
-            isCore = false;
-            }
-        }
-  
-        // if (skillData[2][index] && line !== skillData[1][index]) {
-        //     line = lines[skillData[2][index]];
-        // }
-    
-        // if (skillData[3][index] && competency !== skillData[3][index]) {
-        //     competency = competencies[skillData[3][index]];
-        // }
-
         const found = skills.find(element => element.skillID === rows[7][index]);
 
         if (found !== undefined) {
             skill = found.skillName  
+            line = found.lineName 
             competency = found.competencyName
-            line = found.lineName  
+            segment = found.segmentName 
+            isCore = null
+            if (found.core.toLowerCase() === "no") {
+                isCore = 0
+            }
+            if (found.core.toLowerCase() === "yes") {
+                isCore = 1
+            }
         }
         else {
             localError = localError +  ' skillID' + rows[7][index] + ', '   
             skill = ''
+            line = ''
             competency = ''
-            line = '' 
+            segment = ''
+            isCore = null
         }
 
         const data2 = {
             skill_id: rows[7][index],
             skill_name: skill, //skillData[skillRow+1][index],
-            segment: segment,
-            is_core: isCore ? 1 : 0,
             competency: competency,
-            line: line
+            line: line,
+            segment: segment,
+            is_core: isCore
+
         };
         theData.push(data2);
         //skillJsonData[data.skillName] = data.skillId;

@@ -72,14 +72,14 @@ export const App = (props) => {
       var ratingsRows = await readXlsxFile(file, { sheet: "Ratings" })
       var targetsRows = await readXlsxFile(file, { sheet: "Targets" })
 
-      var segments = getSegmentsFromSpreadsheet(ratingsRows, doError);
-      var lines = getLinesFromSpreadsheet(ratingsRows, doError);
-      var competencies = getCompetenciesFromSpreadsheet(ratingsRows, doError);
+      // var segments = getSegmentsFromSpreadsheet(ratingsRows, doError);
+      // var lines = getLinesFromSpreadsheet(ratingsRows, doError);
+      // var competencies = getCompetenciesFromSpreadsheet(ratingsRows, doError);
       var skills = getSkillsFromSpreadsheet(ratingsRows, doError);
       console.log(skills)
 
       var allPosition = getAllPosition(targetsRows, doError); //1
-      var allSkill = getAllSkill(ratingsRows, segments, lines, competencies, skills, doError); //2
+      var allSkill = getAllSkill(ratingsRows, skills, doError); //2
       console.log(allSkill)
       var allUser = getAllUser(ratingsRows, allPosition, selectedquarter, selectedyear, doError); //3
       var positionTarget = getPositionTarget(targetsRows, doError); //4
@@ -104,7 +104,7 @@ export const App = (props) => {
           
       <div style={{height:'70px',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center'}}>
         <div style={{fontSize:'24px'}}>Upload File for Benchmark Report</div><div style={{'fontSize':'10px'}}>
-          v2022-02-23-b
+          v2022-02-23-d
         </div>
       </div>
 
