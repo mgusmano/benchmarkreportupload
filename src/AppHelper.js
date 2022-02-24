@@ -54,10 +54,10 @@ export const getSkillsFromSpreadsheet = (rows, doError) => {
     var skillNames = rows[dataStartRow+1]
     var allSkill = []
 
-    var segments = rows[0]
-    var cores = rows[1]
-    var lines = rows[2]
-    var competencies = rows[3]
+    var cores = rows[3]
+    var segments = rows[4]
+    var lines = rows[5]
+    var competencies = rows[6]
     var currentSegment = ''
     var currentLine = ''
     var currentCompetency = ''

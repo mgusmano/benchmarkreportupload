@@ -35,6 +35,11 @@ export const App = (props) => {
     setSelectedQuarter({label: quarter, value: quarter})
   },[])
 
+  const changeSelectedYear = (option) => {
+    console.log('changeSelectedYear')
+    setSelectedYear(option)
+  }
+
   const changeSelectedQuarter = (option) => {
     console.log('changeSelectedQuarter')
     setSelectedQuarter(option)
@@ -114,9 +119,15 @@ export const App = (props) => {
           <Select
             name="form-field-name"
             value={selectedyear}
+            onChange={changeSelectedYear}
             className="search-select"
             optionalClassName="form-select-option"
-            disabled={true}
+            disabled={false}
+            options={[
+              {label: 2022, value: 2022},
+              {label: 2021, value: 2021},
+              {label: 2020, value: 2020}
+            ]}
             clearable={false}
           />
         </div>
