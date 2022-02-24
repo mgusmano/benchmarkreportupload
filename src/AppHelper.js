@@ -100,7 +100,7 @@ export const getAllPosition = (rows, doError) => {
 
 export const getAllSkill = (rows, skills, doError) => {
     var dataStartRow = convertRowNumberToNumber(10)
-    var skillRow = convertRowNumberToNumber(8)
+    //var skillRow = convertRowNumberToNumber(8)
     var dataStartColumn = convertColumnLetterToNumber('L')
     var localError = ''
 
@@ -166,7 +166,7 @@ export const getAllUser = (rows, positions, selectedquarter, selectedyear, doErr
         if (found === undefined) {
             positionId = null
             console.log('undefined',rows[r][4])
-            localError = localError + rows[r][4] + ' is undefined' + ', '       
+            localError = localError + rows[r][4] + ' is undefined, '       
         }
         else {
             positionId = found.position_id
@@ -222,15 +222,17 @@ export const getUserSkill = (rows, isSelfRating, selectedquarter, selectedyear, 
     for (let r = dataStartRow; r < rows.length; r++) {
         let userId = rows[r][0]; //row,col
         if (userId) {
-            for (let c = dataStartColumn; c < rows[0].length; c++) {
-                theData.push({
-                    "user_id": userId,
-                    "skill_id": skillData[c], //rows[r][c],
-                    "rating": rows[r][c] >= 0 ? rows[r][c] : null,
-                    "is_self": isSelfRating ? 1 : 0,
-                    "user_year": selectedyear.value,
-                    "user_quarter": selectedquarter.value
-                })
+            for (let c = dataStartColumn; c < rows[dataStartRow].length; c++) {
+                if (rows[r][c] !== null && rows[r][c] !== -1) {
+                    theData.push({
+                        "user_id": userId,
+                        "skill_id": skillData[c], //rows[r][c],
+                        "rating": rows[r][c], // >= 0 ? rows[r][c] : null,
+                        "is_self": isSelfRating ? 1 : 0,
+                        "user_year": selectedyear.value,
+                        "user_quarter": selectedquarter.value
+                    })
+                }
             }
         }
         else {
