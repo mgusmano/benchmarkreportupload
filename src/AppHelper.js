@@ -146,7 +146,7 @@ export const getAllSkill = (rows, skills, doError) => {
             skill_name: skill, //skillData[skillRow+1][index],
             competency: competency,
             line: line,
-            segment: segment,
+            segement: segment,
             is_core: isCore
 
         };
@@ -183,10 +183,10 @@ export const getAllUser = (rows, positions, selectedquarter, selectedyear, doErr
             "average": rows[r][6],
             "user_quarter": selectedquarter.value,
             "user_year": selectedyear.value,
-            // "job_band": 0, //null,
-            // "segment": 0, //null,
-            // "sub_function":0, // null,
-            // "function": 0 //null
+            "job_band": 4, //null,
+            "segment": 4, //null,
+            "sub_function": 4, // null,
+            "function": 4 //null
         })
     }
     doError(localError)
