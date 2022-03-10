@@ -201,12 +201,15 @@ export function getPositionTarget(rows, doError) {
     for (let r = dataStartRow; r < rows.length; r++) {
         var skillId = 1
         for (let c = dataStartColumn; c < totalIterations; c++) {
-            var o = {
-                "position_id": rows[r][0],
-                "skill_id": skillId,
-                "target_rating": rows[r][c]
+            console.log(rows[r][c])
+            if (rows[r][c] !== null) {
+                var o = {
+                    "position_id": rows[r][0],
+                    "skill_id": skillId,
+                    "target_rating": rows[r][c]
+                }
+                theData.push(o)
             }
-            theData.push(o)
             skillId++;
         }
     }
